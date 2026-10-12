@@ -19,12 +19,18 @@ return [
 
     'allowed_methods' => ['*'],
 
- 'allowed_origins' => [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
-],
+    // Local dev origins plus the deployed frontend(s).
+    // Set FRONTEND_URL on Railway (comma-separated for more than one).
+    'allowed_origins' => array_values(array_filter(array_merge(
+        [
+            'http://localhost:5173',
+            'http://127.0.0.1:5173',
+            'http://localhost:5174',
+            'http://127.0.0.1:5174',
+        ],
+        array_map(fn ($url) => rtrim(trim($url), '/'), explode(',', env('FRONTEND_URL', '')))
+    ))),
+
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
